@@ -586,16 +586,17 @@ def findPackages(
 			if _deps_equal(binpkg_deps, ebuild_deps, cpv.eapi, uselist):
 				continue
 
-		if destructive and var_dbapi.cpv_exists(cpv):
+		if destructive and port_dbapi.cpv_exists(cpv):
 			# Exclude if an instance of the package is installed due to
 			# the --package-names option.
 			if cp in installed and port_dbapi.cpv_exists(cpv):
 				continue
 
-			# Exclude if BUILD_TIME of binpkg is same as vartree
-			buildtime = var_dbapi.aux_get(cpv, ['BUILD_TIME'])[0]
-			if buildtime == bin_dbapi.aux_get(cpv, ['BUILD_TIME'])[0]:
-				continue
+			if var_dbapi.cpv_exists(cpv):
+				# Exclude if BUILD_TIME of binpkg is same as vartree
+				buildtime = var_dbapi.aux_get(cpv, ['BUILD_TIME'])[0]
+				if buildtime == bin_dbapi.aux_get(cpv, ['BUILD_TIME'])[0]:
+					continue
 
 		binpkg_path = bin_dbapi.bintree.getname(cpv)
 		dead_binpkgs.setdefault(cpv, []).append(binpkg_path)
